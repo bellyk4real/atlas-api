@@ -7,6 +7,7 @@ from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.metrics import accuracy_score
 import xgboost as xgb
 from sklearn.model_selection import train_test_split
+import os
 
 # Use pickle to load in the pre-trained model
 with open(f'model/atlas-api.pkl', 'rb') as f:
@@ -16,6 +17,9 @@ with open(f'model/atlas-api.pkl', 'rb') as f:
 
 app = Flask(__name__)
 api = Api(app)
+
+port = int(os.environ.get("PORT", 5000))
+app.run(debug=False, host='0.0.0.0', port=port)
 
 a_customer = api.model('Customer', {'Saving accounts': fields.String("Categorical description of the amount in savings account"),
                                     'Checking account': fields.String("Categorical description of the amount in savings account"),
