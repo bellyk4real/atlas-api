@@ -34,7 +34,7 @@ a_customer = api.model('Customer', {'Saving accounts': fields.String("Categorica
                                    } )
 
 parser = reqparse.RequestParser()
-parser.add_argument('Saving accounts', required=True, 
+parser.add_argument('Saving accounts', required=True,
                          choices=('little', 'moderate', 'quite rich', 'rich'), 
                          help='String - little, moderate, quite rich, rich')
 parser.add_argument('Checking account', required=True, 
@@ -84,8 +84,12 @@ class Model(Resource):
         
         # Get the model's prediction
         prediction = model.predict(df)[0] 
-        return {"status": "success", "prediction": str(prediction)}, 200
+        return {"status": "success", 
+                "code":200,
+                "result":{
+                    "prediction":str(prediction)
+                }}, 200
 
 
 if __name__ == "__main__":
-    app.run(debug=False, host='0.0.0.0', port=port)
+    app.run(debug=True, host='0.0.0.0', port=port)
