@@ -17,9 +17,8 @@ with open(f'model/atlas-api.pkl', 'rb') as f:
 
 app = Flask(__name__)
 api = Api(app)
-
 port = int(os.environ.get("PORT", 5000))
-app.run(debug=False, host='0.0.0.0', port=port)
+
 
 a_customer = api.model('Customer', {'Saving accounts': fields.String("Categorical description of the amount in savings account"),
                                     'Checking account': fields.String("Categorical description of the amount in savings account"),
@@ -89,4 +88,5 @@ class Model(Resource):
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=False, host='0.0.0.0', port=port)
+    # app.run()
