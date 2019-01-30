@@ -9,45 +9,43 @@ import pickle
 
 data = pd.read_csv(r"C:\Users\wakanda\Documents\Resources\DATASETS\german-credit-risk\german_credit_data.csv")
 
-#Replace nulls with the mode
+#Replace nulls in the savings account with the mode
 data["Saving accounts"]=data["Saving accounts"].fillna(data["Saving accounts"].mode()[0])
 data["Checking account"]=data["Checking account"].fillna(data["Checking account"].mode()[0])
 
-#Create categories from the Age column
-interval = (18, 25, 35, 60, 120)
-cats = ['Student', 'Young', 'Adult', 'Senior']
-data["Age"] = pd.cut(data.Age, interval, labels=cats)
-
-categorical_columns = ["Age","Sex", "Housing", "Saving accounts",  "Purpose"]
-numeric_columns = ["Job", "Credit amount" , "Duration"]
-
-def create_ohe(df, col):
-    """Function that will takes the raw dataframe and the
-       column name and return a one hot encoded DF
-    """
-    le = LabelEncoder()
-    a=le.fit_transform(data[col]).reshape(-1,1)
-    ohe = OneHotEncoder(sparse=False)
-    column_names = [col+ "_"+ str(i) for i in le.classes_]
-    return(pd.DataFrame(ohe.fit_transform(a),columns =column_names))
-
-#We create a loop to create the final dataset with all features
-temp = data[numeric_columns]
-for column in categorical_columns:
-    temp_df = create_ohe(data,column)
-    temp = pd.concat([temp,temp_df],axis=1)
-
+# Reformat and drop the target variable Risk
 data["Risk"] = data["Risk"].map({"good":1, "bad":0})
+target = data["Risk"]
+data.drop(["Unnamed: 0"], axis=1, inplace = True)
+data.drop(["Risk"], axis=1, inplace = True)
 
-x_train, x_test, y_train, y_test = train_test_split(temp, data["Risk"], test_size=0.2,random_state=2019)
+#Convert Sex, Housing, Saving accounts, Checking account, Purpose to ints
+# Categorical boolean mask
+categorical_feature_mask = data.dtypes==object
+# filter categorical columns using mask and turn it into a list
+categorical_cols = data.columns[categorical_feature_mask].tolist()
 
+
+# apply le on categorical feature columns
+le = LabelEncoder()
+data[categorical_cols] = data[categorical_cols].apply(lambda col: le.fit_transform(col))
+
+#Split the data into training and validation sets
+x_train, x_test, y_train, y_test = train_test_split(data, target, test_size=0.2,random_state=2019)
+
+#Create a classifier to fit the model
 classifier = xgb.sklearn.XGBClassifier(nthread=-1, seed=1)
 classifier.fit(x_train, y_train)
+
+#Make predictions using the test dataset
 y_pred = classifier.predict(x_test)
 predictions = [round(value) for value in y_pred]
+
+
 # evaluate predictions
 accuracy = accuracy_score(y_test, predictions)
 print("Accuracy: %.2f%%" % (accuracy * 100.0))
 
+#Save the model in okl format to the local directory model
 with open('model/atlas-api.pkl', 'wb') as file:
     pickle.dump(classifier, file)
