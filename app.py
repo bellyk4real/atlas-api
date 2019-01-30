@@ -7,6 +7,7 @@ from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.metrics import accuracy_score
 import xgboost as xgb
 from sklearn.model_selection import train_test_split
+from werkzeug.contrib.fixers import ProxyFix
 import os
 
 # Use pickle to load in the pre-trained model
@@ -17,6 +18,7 @@ with open(f'model/atlas-api.pkl', 'rb') as f:
 
 app = Flask(__name__)
 api = Api(app)
+app.wsgi_app = ProxyFix(app.wsgi_app)
 port = int(os.environ.get("PORT", 5000))
 
 
@@ -62,8 +64,6 @@ class Model(Resource):
            and returns as an output of the probability of default on the loan
         """
         args = parser.parse_args()
-
-
         # Make DataFrame for model
         df = pd.DataFrame(args,columns=['Age','Sex','Job','Housing','Saving accounts',
                                           'Checking account', 'Credit amount', 'Duration','Purpose'],
@@ -89,4 +89,3 @@ class Model(Resource):
 
 if __name__ == "__main__":
     app.run(debug=False, host='0.0.0.0', port=port)
-    # app.run()
