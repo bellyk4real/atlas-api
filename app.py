@@ -64,13 +64,13 @@ class Model(Resource):
            and returns as an output of the probability of default on the loan
         """
         args = parser.parse_args()
-        # Make DataFrame for model
+        # Convert json input to a pandas dataframe
         df = pd.DataFrame(args,columns=['Age','Sex','Job','Housing','Saving accounts',
                                           'Checking account', 'Credit amount', 'Duration','Purpose'],
                                            index=[1])
 
         
-        #Convert Sex, Housing, Saving accounts, Checking account, Purpose to int, float or boolean
+        #Convert Sex, Housing, Saving accounts, Checking account, Purpose to ints
         # Categorical boolean mask
         categorical_feature_mask = df.dtypes==object
         # filter categorical columns using mask and turn it into a list
