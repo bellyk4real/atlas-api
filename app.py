@@ -60,6 +60,9 @@ class Model(Resource):
     def post(self):
         """A function that takes the an input of customer details via an APi
            and returns as an output of the probability of default on the loan
+
+           arg1 : json api request
+           output: boolean 1,0
         """
         args = parser.parse_args()
         # Convert json input to a pandas dataframe
@@ -82,6 +85,7 @@ class Model(Resource):
         
         # Get the model's prediction
         prediction = model.predict(df)[0] 
+        
         return {"status": "success", 
                 "code":200,
                 "result":{
