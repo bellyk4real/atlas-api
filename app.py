@@ -2,11 +2,7 @@ from flask import Flask, request
 from flask_restplus import Api, Resource, fields, reqparse
 import pandas as pd
 import pickle
-import numpy as np
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
-from sklearn.metrics import accuracy_score
-import xgboost as xgb
-from sklearn.model_selection import train_test_split
 from werkzeug.contrib.fixers import ProxyFix
 import os
 
@@ -21,7 +17,7 @@ api = Api(app)
 app.wsgi_app = ProxyFix(app.wsgi_app)
 port = int(os.environ.get("PORT", 5000))
 
-
+# API Documentation using Swagger Open API
 a_customer = api.model('Customer', {'Saving accounts': fields.String("Categorical description of the amount in savings account"),
                                     'Checking account': fields.String("Categorical description of the amount in savings account"),
                                     'Age': fields.Integer("The age of the applicant"),
@@ -33,6 +29,8 @@ a_customer = api.model('Customer', {'Saving accounts': fields.String("Categorica
                                     'Credit amount': fields.Integer("The amount the customer would like to borrow"),
                                    } )
 
+
+# Error handling using 
 parser = reqparse.RequestParser()
 parser.add_argument('Saving accounts', required=True,
                          choices=('little', 'moderate', 'quite rich', 'rich'), 
