@@ -6,8 +6,9 @@ import xgboost as xgb
 from sklearn.model_selection import train_test_split
 import pickle
 
-
-data = pd.read_csv(r"C:\Users\wakanda\Documents\Resources\DATASETS\german-credit-risk\german_credit_data.csv")
+# import data
+url = "C:\Users\wakanda\Documents\Resources\DATASETS\german-credit-risk\german_credit_data.csv"
+data = pd.read_csv(url)
 
 #Replace nulls in the savings account with the mode
 data["Saving accounts"]=data["Saving accounts"].fillna(data["Saving accounts"].mode()[0])
