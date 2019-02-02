@@ -7,8 +7,8 @@ from sklearn.model_selection import train_test_split
 import pickle
 
 # import data
-url = "C:\Users\wakanda\Documents\Resources\DATASETS\german-credit-risk\german_credit_data.csv"
-data = pd.read_csv(url)
+URL = r"C:\Users\wakanda\Documents\Resources\DATASETS\german-credit-risk\german_credit_data.csv"
+data = pd.read_csv(URL)
 
 #Replace nulls in the savings account with the mode
 data["Saving accounts"]=data["Saving accounts"].fillna(data["Saving accounts"].mode()[0])
